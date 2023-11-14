@@ -32,8 +32,8 @@ class LoginView(APIView):
 
             serializer = UserSerializer(user)
             response = Response({'message':'로그인 성공','user':serializer.data},status=status.HTTP_201_CREATED)
-            response.set_cookie('access_token', access, httponly=True, samesite='None', secure=False, max_age=3600)
-            response.set_cookie('refresh_token', refresh, httponly=True, samesite='None', secure=False, max_age=86400)
+            response.set_cookie('access_token', access, httponly=True, samesite='Lax', secure=False, max_age=3600)
+            response.set_cookie('refresh_token', refresh, httponly=True, samesite='Lax', secure=False, max_age=86400)
             return response
         else:
             return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
