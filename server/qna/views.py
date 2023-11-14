@@ -17,21 +17,21 @@ class QnaCreateView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class QnaReadView(APIView):
-    def post(self, request):
+    def get(self, request):
         qna = Qna.objects.all()
         serializer = QnaSerializer(qna, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
 class QnaDetailReadView(APIView):
-    def post(self, request):
-        pk = request.data.get('qna_id')
-        qna = Qna.objects.filter(qna_id=pk)
+    def get(self, request, qna_id):
+        # pk = request.data.get('qna_id')
+        qna = Qna.objects.filter(qna_id=qna_id)
         serializer = QnaSerializer(qna, many=True)
         
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class QnaUpdateView(APIView):
-    def post(self, request):
+    def put(self, request):
         pk = request.data.get('qna_id')
         qna = get_object_or_404(Qna, qna_id=pk)
         serializer = QnaSerializer(qna, data=request.data)
@@ -41,9 +41,9 @@ class QnaUpdateView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class QnaDeleteView(APIView):
-    def post(self, request):
-        pk = request.data.get('qna_id')
-        qna = get_object_or_404(Qna, qna_id=pk)
+    def delete(self, request, qna_id):
+        # pk = request.data.get('qna_id')
+        qna = get_object_or_404(Qna, qna_id=qna_id)
         try:
             qna.delete()
             return Response({'message': '삭제'}, status=status.HTTP_200_OK)
@@ -51,8 +51,8 @@ class QnaDeleteView(APIView):
             return Response({'message': '실패'}, status=status.HTTP_400_BAD_REQUEST)
 
 class QnaSearchView(APIView):
-    def post(self, request):
-        search = request.data.get('search', '')
+    def get(self, request):
+        search = request.query_params.get('search', '')
 
         if search:
             search_list = Qna.objects.filter(
@@ -75,14 +75,14 @@ class CommentCreateView(APIView):
         return Response({"message": "실패", "error": errors}, status=status.HTTP_400_BAD_REQUEST)
     
 class CommentReadView(APIView):
-    def post(self, request):
-        qna_id = request.data.get('qna')  
-        comments = Comment.objects.filter(qna_id=qna_id)
+    def get(self, request, qna):
+        # qna_id = request.data.get('qna')  
+        comments = Comment.objects.filter(qna_id=qna)
         serializer = CommentSerializer(comments, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class CommentUpdateView(APIView):
-    def post(self, request):
+    def put(self, request):
         pk = request.data.get('comment_id')
         comment = get_object_or_404(Comment, comment_id=pk)
         serializer = CommentUpdateSerializer(comment, data=request.data)
@@ -92,9 +92,9 @@ class CommentUpdateView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class CommentDeleteView(APIView):
-    def post(self, request):
-        pk = request.data.get('comment_id')
-        comment = get_object_or_404(Comment, comment_id=pk)
+    def delete(self, request, comment_id):
+        # pk = request.data.get('comment_id')
+        comment = get_object_or_404(Comment, comment_id=comment_id)
 
         try:
             comment.delete()

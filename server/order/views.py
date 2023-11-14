@@ -16,9 +16,9 @@ class OrderCreateView(APIView):
     
 # 주문삭제
 class OrderDeleteView(APIView):
-    def post(self, request):
-        pk = request.data.get('order_id')
-        order = get_object_or_404(Order, order_id=pk)
+    def delete(self, request, order_id):
+        # pk = request.data.get('order_id')
+        order = get_object_or_404(Order, order_id=order_id)
         try:
             order.delete()
             return Response({'message': '삭제'}, status=status.HTTP_200_OK)
@@ -26,17 +26,17 @@ class OrderDeleteView(APIView):
             return Response({'message': '실패'}, status=status.HTTP_400_BAD_REQUEST)
 
 class OrderReadView(APIView):
-    def post(self, request):
-        pk = request.data.get('order_id')
-        order = Order.objects.filter(order_id=pk)
+    def get(self, request, order_id):
+        # pk = request.data.get('order_id')
+        order = Order.objects.filter(order_id=order_id)
         serializer = OrderSerializer(order, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 # 결제하기
 class OrderPayView(APIView):
-    def post(self, request):
-        pk = request.data.get('order_id')
-        order = Order.objects.get(order_id=pk)
+    def get(self, request, order_id):
+        # pk = request.data.get('order_id')
+        order = Order.objects.get(order_id=order_id)
         
         # 결제 완료되면 0 -> 1 변경 
         if order:
@@ -88,10 +88,9 @@ class ReviewUpdateView(APIView):
     
 # 리뷰 삭제
 class ReviewDeleteView(APIView):
-    def post(self, request):
-        pk = request.data.get('review_id')
-        review = get_object_or_404(Review, review_id=pk)
-
+    def delete(self, request, review_id):
+        # pk = request.data.get('review_id')
+        review = get_object_or_404(Review, review_id=review_id)
         try:
             review.delete()
             return Response({'message': '삭제'}, status=status.HTTP_200_OK)
@@ -99,8 +98,7 @@ class ReviewDeleteView(APIView):
             return Response({'message': '삭제 실패'}, status=status.HTTP_400_BAD_REQUEST)
         
 class ReviewReadView(APIView):
-    def post(self, request):
-        product_id = request.data.get('product_id')
+    def get(self, request, product_id):
         reviews = Review.objects.filter(product_id=product_id)
         serializer = ReviewSerializer(reviews, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)

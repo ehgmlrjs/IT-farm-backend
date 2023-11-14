@@ -13,7 +13,7 @@ class Authmiddleware:
     
     def __call__(self, request):
         urls = ('/users/','/product/read/','/product/detail/','/product/search/','/event/read/','/recipe/read/',
-                '/redipe/detail/','/recipe/search/')
+                '/recipe/detail/','/recipe/search/')
         if request.path in urls:
             response = self.get_response(request)
             return response

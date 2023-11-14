@@ -23,14 +23,14 @@ class RecipeReadView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
     
 class RecipeDetailReadView(APIView):
-    def post(self, request):
-        pk = request.data.get('recipe_id')
-        recipes = Recipe.objects.filter(recipe_id=pk)
+    def get(self, request, recipe_id):
+        # pk = request.data.get('recipe_id')
+        recipes = Recipe.objects.filter(recipe_id=recipe_id)
         serializer = RecipeSerializer(recipes, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
 class RecipeUpdateView(APIView):
-    def post(self, request):
+    def put(self, request):
         pk = request.data.get('recipe_id')
         recipes = get_object_or_404(Recipe, recipe_id=pk)
         serializer = RecipeSerializer(recipes, data=request.data)
@@ -40,9 +40,9 @@ class RecipeUpdateView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class RecipeDeleteView(APIView):
-    def post(self, request):
-        pk = request.data.get('recipe_id')
-        recipes = get_object_or_404(Recipe, recipe_id=pk)
+    def delete(self, request, recipe_id):
+        # pk = request.data.get('recipe_id')
+        recipes = get_object_or_404(Recipe, recipe_id=recipe_id)
         try:
             recipes.delete()
             return Response({'message': '삭제'}, status=status.HTTP_200_OK)
@@ -50,8 +50,8 @@ class RecipeDeleteView(APIView):
             return Response({'message': '실패'}, status=status.HTTP_400_BAD_REQUEST)
 
 class RecipeSearchView(APIView):
-    def post(self, request):
-        search = request.data.get('search', '')
+    def get(self, request):
+        search = request.query_params.get('search', '')
         if search:
             search_list = Recipe.objects.filter(
                 Q(subject__icontains=search) |
