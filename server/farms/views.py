@@ -41,7 +41,7 @@ class FarmUpdateView(APIView):
         return Response({"message": "실패", "error": errors}, status=status.HTTP_400_BAD_REQUEST)
     
 class FarmDeleteView(APIView):
-    def post(self, request, farm_id):
+    def delete(self, request, farm_id):
         farm = get_object_or_404(Farms, id=farm_id)
         try:
             farm.delete()
