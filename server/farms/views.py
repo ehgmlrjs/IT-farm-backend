@@ -10,7 +10,7 @@ from .distance import geocoding, distance
 
 class FarmCreateView(APIView):
     def post(self, request):
-        user_id = request.data.get('user_id')
+        user_id = request.member.get('id')
         address = request.data.get('address')
         address_detail = request.data.get('address_detail')
         farms = Farms.objects.filter(user_id=user_id,address=address,address_detail=address_detail)
