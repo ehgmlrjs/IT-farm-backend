@@ -7,9 +7,9 @@ from .serializers import NoticeSerializer
 from django.db.models import Q
 
 class NoticeReadView(APIView):
-    def post(self, request):
-        notice_type = int(request.data.get('notice_type', 0))
-        user_type = request.data.get('user_type')
+    def get(self, request):
+        notice_type = int(request.query_params.get('notice_type', 0))
+        user_type = request.query_params.get('user_type', '').lower()
 
         # 0: 노하우 1: 공지
         if notice_type == 0 and user_type.lower() == 'seller':
@@ -29,9 +29,8 @@ class NoticeReadView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
     
 class NoticeDetailReadView(APIView):
-    def post(self,request):
-        pk = request.data.get('notice_id')
-        notices = Notice.objects.filter(notice_id=pk)
+    def get(self,request, notice_id):
+        notices = Notice.objects.filter(notice_id=notice_id)
         serializer = NoticeSerializer(notices, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
@@ -44,7 +43,7 @@ class NoticeCreateView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class NoticeUpdateView(APIView):
-    def post(self, request):
+    def put(self, request):
         pk = request.data.get('notice_id')
         notice = get_object_or_404(Notice, notice_id=pk)
         serializer = NoticeSerializer(notice, data=request.data)
@@ -54,9 +53,9 @@ class NoticeUpdateView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class NoticeDeleteView(APIView):
-    def post(self, request):
-        pk = request.data.get('notice_id')
-        notice = get_object_or_404(Notice, notice_id=pk)
+    def delete(self, request, notice_id):
+        # pk = request.data.get('notice_id')
+        notice = get_object_or_404(Notice, notice_id=notice_id)
         try:
             notice.delete()
             return Response({'message': '삭제'}, status=status.HTTP_200_OK)
@@ -64,8 +63,8 @@ class NoticeDeleteView(APIView):
             return Response({'message': '실패'}, status=status.HTTP_400_BAD_REQUEST)
     
 class NoticeSearchView(APIView):
-    def post(self, request):
-        search = request.data.get('search', '')
+    def get(self, request):
+        search = request.query_params.get('search')
 
         if search:
             search_list = Notice.objects.filter(
