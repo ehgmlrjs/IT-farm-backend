@@ -26,10 +26,10 @@ class FarmCreateView(APIView):
         return Response({"message": "실패", "error": errors}, status=status.HTTP_400_BAD_REQUEST)
 
 class FarmUpdateView(APIView):
-    def post(self, request):
-        pk = request.member.get('id')
+    def put(self, request):
+        pk = request.data.get('farm_id')
         farm = get_object_or_404(Farms, pk=pk)
-        user_id = request.data.get('user_id')
+        user_id = request.member.get('id')
         address = request.data.get('address')
         latitude, longitude = geocoding(address)
         center = distance(latitude,longitude)
@@ -41,7 +41,7 @@ class FarmUpdateView(APIView):
         return Response({"message": "실패", "error": errors}, status=status.HTTP_400_BAD_REQUEST)
     
 class FarmDeleteView(APIView):
-    def post(self, request, farm_id):
+    def delete(self, request, farm_id):
         farm = get_object_or_404(Farms, id=farm_id)
         try:
             farm.delete()
@@ -52,6 +52,7 @@ class FarmDeleteView(APIView):
 class FarmReadView(APIView):
     def get(self, request, center=None):
         user_id = request.member.get('id')
+        print(user_id)
         if center == '전국':
             farms = Farms.objects.all()
         elif center:

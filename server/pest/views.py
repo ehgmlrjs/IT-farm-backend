@@ -17,7 +17,7 @@ class PestCreateView(APIView):
         return Response({"message": "실패", "error": errors}, status=status.HTTP_400_BAD_REQUEST)
 
 class PestUpdateView(APIView):
-    def post(self, request):
+    def put(self, request):
         pk = request.data.get('pest_id')
         pest = get_object_or_404(Pest, pk=pk)
         serializer = PestSerializer(instance=pest, data=request.data)

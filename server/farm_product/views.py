@@ -46,7 +46,7 @@ class FarmProductDeleteView(APIView):
             return Response({'message':f'삭제 실패: {e}'}, status=status.HTTP_400_BAD_REQUEST)
 
 class FarmProductReadView(APIView):
-    def post(self, request):
+    def get(self, request):
         farm_id = request.GET.get('farm_id',None)
         center = request.GET.get('center',None)
         if center:

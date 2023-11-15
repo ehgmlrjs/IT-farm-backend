@@ -8,7 +8,8 @@ from product.models import Product
 
 class CartCreateView(APIView):
     def post(self, request):
-        serializer = CartSerializer(data=request.data)
+        user_id = request.member.get('id')
+        serializer = CartSerializer(data={**request.data, 'user_id':user_id})
         if serializer.is_valid():
             serializer.save()
             return Response({"message": "성공"}, status=status.HTTP_201_CREATED)
@@ -16,7 +17,7 @@ class CartCreateView(APIView):
         return Response({"message": "실패", "error": errors}, status=status.HTTP_400_BAD_REQUEST)
 
 class CartUpdateView(APIView):
-    def post(self, request):
+    def put(self, request):
         try:
             pk = request.data.get('cart_id')
             cart = get_object_or_404(Cart, pk=pk)
@@ -45,6 +46,7 @@ class CartDeleteView(APIView):
 
 class CartReadView(APIView):
     def get(self, request):
+        print(request.member)
         user_id = request.member.get('id')
         cart = Cart.objects.filter(user_id=user_id)
         serializer = CartReadSerializer(cart,many=True)
