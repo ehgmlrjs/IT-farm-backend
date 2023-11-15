@@ -19,5 +19,4 @@ class Review(models.Model):
     content = models.TextField()
     photo = models.CharField(max_length=255, null=True)
     score = models.IntegerField()
-    kind = models.CharField(max_length=45)
     regdate = models.DateTimeField(auto_now_add=True)
