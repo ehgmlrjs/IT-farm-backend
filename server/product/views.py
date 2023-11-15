@@ -17,7 +17,7 @@ class ProductCreateView(APIView):
         return Response({"message": "실패", "error": errors}, status=status.HTTP_400_BAD_REQUEST)
 
 class ProductUpdateView(APIView):
-    def post(self, request):
+    def put(self, request):
         pk = request.data.get('product_id')
         product = get_object_or_404(Product, pk=pk)
         serializer = ProductSerializer(instance=product, data=request.data)

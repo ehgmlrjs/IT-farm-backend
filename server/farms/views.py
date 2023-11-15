@@ -26,7 +26,7 @@ class FarmCreateView(APIView):
         return Response({"message": "실패", "error": errors}, status=status.HTTP_400_BAD_REQUEST)
 
 class FarmUpdateView(APIView):
-    def post(self, request):
+    def put(self, request):
         pk = request.data.get('farm_id')
         farm = get_object_or_404(Farms, pk=pk)
         user_id = request.member.get('id')
