@@ -8,7 +8,8 @@ from .serializers import *
 # 주문하기 
 class OrderCreateView(APIView):
     def post(self, request):
-        serializer = OrderSerializer(data=request.data)
+        nickname = request.member.get('nickname')
+        serializer = OrderSerializer(data={**request.data, 'nickname':nickname})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)

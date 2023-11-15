@@ -8,9 +8,13 @@ from .serializers import QnaSerializer, CommentSerializer, CommentUpdateSerializ
 
 from django.db.models import Q
 
+
 class QnaCreateView(APIView):
     def post(self, request):
-        serializer = QnaSerializer(data=request.data)
+        user_type = request.member.get('user_type')
+        nickname = request.member.get('nickname')
+
+        serializer = QnaSerializer(data={**request.data, 'user_type':user_type, 'nickname':nickname})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -18,23 +22,29 @@ class QnaCreateView(APIView):
 
 class QnaReadView(APIView):
     def get(self, request):
-        qna = Qna.objects.all()
-        serializer = QnaSerializer(qna, many=True)
+        nickname = request.member.get('nickname')
+    
+        qna = Qna.objects.filter(nickname=nickname)
+        serializer = QnaSerializer(qna, many=True) 
         return Response(serializer.data, status=status.HTTP_200_OK)
     
 class QnaDetailReadView(APIView):
     def get(self, request, qna_id):
-        # pk = request.data.get('qna_id')
-        qna = Qna.objects.filter(qna_id=qna_id)
+        nickname = request.member.get('nickname')
+        qna = Qna.objects.filter(qna_id=qna_id, nickname=nickname)
         serializer = QnaSerializer(qna, many=True)
         
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class QnaUpdateView(APIView):
     def put(self, request):
+
         pk = request.data.get('qna_id')
+        nickname = request.member.get('nickname')
+        user_type = request.member.get('user_type')
+
         qna = get_object_or_404(Qna, qna_id=pk)
-        serializer = QnaSerializer(qna, data=request.data)
+        serializer = QnaSerializer(qna, data={**request.data, 'user_type':user_type, 'nickname':nickname})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)

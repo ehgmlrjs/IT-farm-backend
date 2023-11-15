@@ -10,7 +10,9 @@ from django.db.models import Q
 
 class RecipeCreateView(APIView):
     def post(self, request):
-        serializer = RecipeSerializer(data=request.data)
+        nickname = request.member.get('nickname')
+
+        serializer = RecipeSerializer(data={**request.data, 'nickname':nickname})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -32,8 +34,9 @@ class RecipeDetailReadView(APIView):
 class RecipeUpdateView(APIView):
     def put(self, request):
         pk = request.data.get('recipe_id')
+        nickname = request.member.get('nickname')
         recipes = get_object_or_404(Recipe, recipe_id=pk)
-        serializer = RecipeSerializer(recipes, data=request.data)
+        serializer = RecipeSerializer(recipes, data={**request.data, 'nickname':nickname})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)

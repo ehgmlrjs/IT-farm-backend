@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'pest',
     'order',
     'cart',
+    'output_model',
 
     "django.contrib.admin",
     "django.contrib.auth",

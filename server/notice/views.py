@@ -9,22 +9,34 @@ from django.db.models import Q
 class NoticeReadView(APIView):
     def get(self, request):
         notice_type = int(request.query_params.get('notice_type', 0))
-        user_type = request.query_params.get('user_type', '').lower()
+        user_type = request.member.get('user_type')
 
         # 0: 노하우 1: 공지
-        if notice_type == 0 and user_type.lower() == 'seller':
-            notices = Notice.objects.filter(notice_type=0)
-        elif notice_type == 1 and user_type.lower() == 'buyer':
-            notices = Notice.objects.filter(notice_type=1, user_type='buyer')
-        elif notice_type == 1 and user_type.lower() == 'seller':
-            notices = Notice.objects.filter(notice_type=1, user_type='seller')
+        # if notice_type == 0 and user_type.lower() == 'seller':
+        #     notices = Notice.objects.filter(notice_type=0)
+        # elif notice_type == 1 and user_type.lower() == 'buyer':
+        #     notices = Notice.objects.filter(notice_type=1, user_type='buyer')
+        # elif notice_type == 1 and user_type.lower() == 'seller':
+        #     notices = Notice.objects.filter(notice_type=1, user_type='seller')
+        # elif notice_type == 0 and user_type.lower() == 'admin':
+        #     notices = Notice.objects.filter(notice_type=0)
+        # elif notice_type == 1 and user_type.lower() == 'admin':
+        #     notices = Notice.objects.filter(notice_type=1)
+        # else:
+        #     return Response({"error": "Invalid parameters"}, status=status.HTTP_400_BAD_REQUEST)
+
+        if notice_type == 0:
+            notices = Notice.objects.filter(notice_type=0, user_type=user_type)
+        elif notice_type == 1:
+            notices = Notice.objects.filter(notice_type=1, user_type=user_type)
         elif notice_type == 0 and user_type.lower() == 'admin':
             notices = Notice.objects.filter(notice_type=0)
         elif notice_type == 1 and user_type.lower() == 'admin':
             notices = Notice.objects.filter(notice_type=1)
         else:
             return Response({"error": "Invalid parameters"}, status=status.HTTP_400_BAD_REQUEST)
-
+        
+        
         serializer = NoticeSerializer(notices, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
@@ -36,7 +48,9 @@ class NoticeDetailReadView(APIView):
     
 class NoticeCreateView(APIView):
     def post(self, request):
-        serializer = NoticeSerializer(data=request.data)
+        user_type = request.member.get('user_type')
+
+        serializer = NoticeSerializer(data={**request.data, 'user_type':user_type})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -45,8 +59,9 @@ class NoticeCreateView(APIView):
 class NoticeUpdateView(APIView):
     def put(self, request):
         pk = request.data.get('notice_id')
+        user_type = request.member.get('user_type')
         notice = get_object_or_404(Notice, notice_id=pk)
-        serializer = NoticeSerializer(notice, data=request.data)
+        serializer = NoticeSerializer(notice, data={**request.data, 'user_type':user_type})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
