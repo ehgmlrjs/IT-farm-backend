@@ -9,7 +9,7 @@ from product.models import Product
 class CartCreateView(APIView):
     def post(self, request):
         user_id = request.member.get('id')
-        serializer = CartSerializer(data=request.data, user_id=user_id)
+        serializer = CartSerializer(data={**request.data, 'user_id':user_id})
         if serializer.is_valid():
             serializer.save()
             return Response({"message": "성공"}, status=status.HTTP_201_CREATED)
