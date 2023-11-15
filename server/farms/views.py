@@ -28,11 +28,14 @@ class FarmCreateView(APIView):
 class FarmUpdateView(APIView):
     def post(self, request):
         pk = request.member.get('id')
+        print(pk)
         farm = get_object_or_404(Farms, pk=pk)
+        print(farm)
         address = request.data.get('address')
         latitude, longitude = geocoding(address)
         center = distance(latitude,longitude)
         serializer = FarmSerializer(instance=farm, data={**request.data, 'user_id':pk, 'center':center, 'latitude':latitude, 'longitude':longitude})
+        print(serializer)
         if serializer.is_valid():
             serializer.save()
             return Response({"message": "성공"}, status=status.HTTP_201_CREATED)
