@@ -76,6 +76,7 @@ CORS_ORIGIN_WHITELIST = [
     'http://localhost:8000',
     'http://52.79.137.176:8000',
     'http://leekc3813.com:3000',
+    'http://leekc3813.com',
 ]
 CORS_ALLOW_CREDENTIALS = True
 
