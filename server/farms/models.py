@@ -2,6 +2,7 @@ from django.db import models
 from users.models import User
 
 class Farms(models.Model):
+    farm_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100, null=False) # 농장명
     user_id = models.ForeignKey(User, on_delete=models.CASCADE, db_column='user_id') # 유저 id
     area = models.IntegerField(default=0,null=False) # 평수

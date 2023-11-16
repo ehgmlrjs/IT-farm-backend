@@ -2,6 +2,7 @@ from django.db import models
 from farms.models import Farms
 
 class Pest(models.Model):
+    pest_id = models.AutoField(primary_key=True)
     farm_id = models.ForeignKey(Farms, on_delete=models.CASCADE, db_column='farm_id') # 농장 id
     problum = models.TextField(null=True) # 문제
     photo = models.CharField(max_length=100,null=True) # 사진
