@@ -8,7 +8,7 @@ class Order(models.Model):
     order_id = models.AutoField(primary_key=True)
     # nickname = models.CharField(max_length=45)
     # product = models.ForeignKey(Product, on_delete=models.CASCADE) # product_id 
-    user_id = models.ForeignKey(User, ondelete=models.CASCADE, db_column='user_id')
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE, db_column='user_id')
     product = models.CharField(max_length=100)
     order_date = models.DateTimeField(auto_now_add=True)
     status = models.IntegerField(default=0) # 0이면 결제 전 
