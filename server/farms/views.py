@@ -50,9 +50,9 @@ class FarmDeleteView(APIView):
             return Response({'message':f'삭제 실패: {e}'}, status=status.HTTP_400_REQUEST)
         
 class FarmReadView(APIView):
-    def get(self, request, center=None):
+    def get(self, request):
         user_id = request.member.get('id')
-        print(center)
+        center = request.GET.get('center',None)
         if center == '전국':
             farms = Farms.objects.all()
         elif center:
@@ -60,5 +60,4 @@ class FarmReadView(APIView):
         else:
             farms = Farms.objects.filter(user_id=user_id)
         serializer = FarmSerializer(farms,many=True)
-        print(serializer.data)
         return Response(serializer.data)
