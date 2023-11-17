@@ -52,7 +52,6 @@ class FarmDeleteView(APIView):
 class FarmReadView(APIView):
     def get(self, request, center=None):
         user_id = request.member.get('id')
-        print(user_id)
         if center == '전국':
             farms = Farms.objects.all()
         elif center:

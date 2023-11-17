@@ -37,7 +37,7 @@ class CartUpdateView(APIView):
     
 class CartDeleteView(APIView):
     def delete(self, request, cart_id):
-        cart = get_object_or_404(Cart, id=cart_id)
+        cart = get_object_or_404(Cart, cart_id=cart_id)
         try:
             cart.delete()
             return Response({'message':'삭제'}, status=status.HTTP_200_OK)
@@ -46,8 +46,7 @@ class CartDeleteView(APIView):
 
 class CartReadView(APIView):
     def get(self, request):
-        print(request.member)
         user_id = request.member.get('id')
         cart = Cart.objects.filter(user_id=user_id)
-        serializer = CartReadSerializer(cart,many=True)
+        serializer = CartSerializer(cart,many=True)
         return Response(serializer.data)
