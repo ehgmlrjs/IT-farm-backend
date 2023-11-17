@@ -4,12 +4,16 @@ from rest_framework.views import APIView
 from rest_framework.generics import get_object_or_404
 from .models import Order, Review
 from .serializers import *
+from farms.distance import geocoding, distance
 
 # 주문하기 
 class OrderCreateView(APIView):
     def post(self, request):
-        nickname = request.member.get('nickname')
-        serializer = OrderSerializer(data={**request.data, 'nickname':nickname})
+        user_id = request.member.get('id')
+        address = request.data.get('address')
+        latitude, longitude = geocoding(address)
+        center = distance(latitude,longitude)
+        serializer = OrderSerializer(data={**request.data, 'user_id':user_id, 'center':center})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -27,24 +31,25 @@ class OrderDeleteView(APIView):
             return Response({'message': '실패'}, status=status.HTTP_400_BAD_REQUEST)
 
 class OrderReadView(APIView):
-    def get(self, request, order_id):
+    def get(self, request):
         # pk = request.data.get('order_id')
-        order = Order.objects.filter(order_id=order_id)
+        user_id = request.member.get('id')
+        order = Order.objects.filter(user_id=user_id)
         serializer = OrderSerializer(order, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-# 결제하기
-class OrderPayView(APIView):
-    def get(self, request, order_id):
-        # pk = request.data.get('order_id')
-        order = Order.objects.get(order_id=order_id)
+# # 결제하기
+# class OrderPayView(APIView):
+#     def get(self, request, order_id):
+#         # pk = request.data.get('order_id')
+#         order = Order.objects.get(order_id=order_id)
         
-        # 결제 완료되면 0 -> 1 변경 
-        if order:
-            order.status = 1
-            order.save()
-            return Response({'message': '성공'}, status=status.HTTP_200_OK)        
-        return Response({'message': '실패'}, status=status.HTTP_400_BAD_REQUEST)
+#         # 결제 완료되면 0 -> 1 변경 
+#         if order:
+#             order.status = 1
+#             order.save()
+#             return Response({'message': '성공'}, status=status.HTTP_200_OK)        
+#         return Response({'message': '실패'}, status=status.HTTP_400_BAD_REQUEST)
     
 # 리뷰쓰기
 class ReviewCreateView(APIView):
@@ -54,7 +59,7 @@ class ReviewCreateView(APIView):
         # 결제 완료 된 주문만
         order = Order.objects.get(order_id=pk)
         try:
-            if order.status == 1:
+            if order.status == 0:
                 review_data = {
                     'order': order.order_id,
                     'nickname': order.nickname, 
@@ -65,7 +70,7 @@ class ReviewCreateView(APIView):
                     'kind': order.product.kind
                 }
             else:
-                return Response({'message':'결제 미완료'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'message':'이미 리뷰 등록'}, status=status.HTTP_400_BAD_REQUEST)
         except:
             return Response({'error': '주문번호가 존재하지 않음'}, status=status.HTTP_400_BAD_REQUEST)
         

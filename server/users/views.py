@@ -14,7 +14,7 @@ class RegisterView(APIView):
             serializer.save()
             return Response({"message": "성공"}, status=status.HTTP_201_CREATED)
         errors = serializer.errors
-        return Response({"message": "실패", "error": errors}, status=status.HTTP_400_CREATED)
+        return Response({"message": "실패", "error": errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class LoginView(APIView):

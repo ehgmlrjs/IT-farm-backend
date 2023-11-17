@@ -44,7 +44,7 @@ class Authmiddleware:
                 serializer = UserSerializer(instance=user)
                 request.user = serializer.data
                 response = self.get_response(request)
-                response.set_cookie('access_token', access, httponly=True, secure=True, max_age=3600)
+                response.set_cookie('access_token', access, httponly=True, secure=False, max_age=3600)
                 return response
             else:
                 raise jwt.exceptions.InvalidTokenError
