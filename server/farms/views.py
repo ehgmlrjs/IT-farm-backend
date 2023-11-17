@@ -59,4 +59,5 @@ class FarmReadView(APIView):
         else:
             farms = Farms.objects.filter(user_id=user_id)
         serializer = FarmSerializer(farms,many=True)
+        print(serializer.data)
         return Response(serializer.data)
