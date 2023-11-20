@@ -7,4 +7,3 @@ class Cart(models.Model):
     product_name = models.ForeignKey(Product, on_delete=models.CASCADE, db_column='product_name', to_field='name') # 상품 id
     count = models.IntegerField(default=0, null=False) # 수량
     created_at = models.DateTimeField(auto_now_add=True) # 등록일자
-    updated_at = models.DateTimeField(auto_now=True) # 수정일자
