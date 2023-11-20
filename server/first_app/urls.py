@@ -14,4 +14,6 @@ urlpatterns = [
     path("pest/", include('pest.urls')),
     path('order/', include('order.urls')),
     path("cart/", include('cart.urls')),
+    path('review_model/', include('review_model.urls')),
+    path('output_model/', include('output_model.urls')),
 ]

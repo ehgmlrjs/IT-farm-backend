@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'order',
     'cart',
     'output_model',
+    'review_model',
 
     "django.contrib.admin",
     "django.contrib.auth",
