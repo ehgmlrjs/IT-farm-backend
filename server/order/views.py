@@ -106,5 +106,5 @@ class ReviewDeleteView(APIView):
 class ReviewReadView(APIView):
     def get(self, request, product_name):
         reviews = Review.objects.filter(product_name=product_name)
-        serializer = ReviewSerializer(reviews, many=True)
+        serializer = ReviewReadSerializer(reviews, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
