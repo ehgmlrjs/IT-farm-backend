@@ -47,12 +47,12 @@ class FarmProductDeleteView(APIView):
 
 class FarmProductReadView(APIView):
     def get(self, request):
-        farm_id = request.GET.get('farm_id',None)
+        user_id = request.member.get('id')
         center = request.GET.get('center',None)
         if center:
             farm_product = Farm_products.objects.filter(center=center,state='등록대기')
         else:
-            farm_product = Farm_products.objects.filter(farm_id=farm_id)
+            farm_product = Farm_products.objects.filter(user_id=user_id)
         serializer = FarmReadSerializer(farm_product,many=True)
         return Response(serializer.data)
     

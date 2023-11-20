@@ -50,8 +50,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(
         max_length=100, unique=True, null=False, blank=False)
     is_superuser = models.BooleanField(default=False)
-    is_active = models.BooleanField(default=True)
-    is_staff = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     nickname = models.CharField(max_length=100, unique=True, null=False)
@@ -64,7 +62,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     mail_number = models.IntegerField(null=True)
     address = models.CharField(max_length=100, null=True)
     address_detail = models.CharField(max_length=100, null=True)
-    profile = models.CharField(max_length=100, null=True)
 
     # 헬퍼 클래스 사용
     objects = UserManager()
