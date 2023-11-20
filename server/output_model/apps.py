@@ -16,7 +16,6 @@ class OutputModelConfig(AppConfig):
     sc_y = None
 
 
-
     def ready(self):
         if os.path.exists(self.model_path):
             self.model = load(self.model_path)

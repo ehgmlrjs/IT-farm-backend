@@ -8,7 +8,6 @@ from .serializers import QnaSerializer, CommentSerializer, CommentUpdateSerializ
 
 from django.db.models import Q
 
-
 class QnaCreateView(APIView):
     def post(self, request):
         user_type = request.member.get('user_type')
