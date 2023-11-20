@@ -11,20 +11,6 @@ class NoticeReadView(APIView):
         notice_type = int(request.query_params.get('notice_type', 0))
         user_type = request.member.get('user_type')
 
-        # 0: 노하우 1: 공지
-        # if notice_type == 0 and user_type.lower() == 'seller':
-        #     notices = Notice.objects.filter(notice_type=0)
-        # elif notice_type == 1 and user_type.lower() == 'buyer':
-        #     notices = Notice.objects.filter(notice_type=1, user_type='buyer')
-        # elif notice_type == 1 and user_type.lower() == 'seller':
-        #     notices = Notice.objects.filter(notice_type=1, user_type='seller')
-        # elif notice_type == 0 and user_type.lower() == 'admin':
-        #     notices = Notice.objects.filter(notice_type=0)
-        # elif notice_type == 1 and user_type.lower() == 'admin':
-        #     notices = Notice.objects.filter(notice_type=1)
-        # else:
-        #     return Response({"error": "Invalid parameters"}, status=status.HTTP_400_BAD_REQUEST)
-
         if notice_type == 0:
             notices = Notice.objects.filter(notice_type=0, user_type=user_type)
         elif notice_type == 1:
@@ -36,13 +22,14 @@ class NoticeReadView(APIView):
         else:
             return Response({"error": "Invalid parameters"}, status=status.HTTP_400_BAD_REQUEST)
         
-        
         serializer = NoticeSerializer(notices, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
 class NoticeDetailReadView(APIView):
-    def get(self,request, notice_id):
-        notices = Notice.objects.filter(notice_id=notice_id)
+    def get(self, request, notice_id):
+        user_type = request.member.get('user_type')
+        notices = Notice.objects.filter(notice_id=notice_id, user_type=user_type)
+        print(notices)
         serializer = NoticeSerializer(notices, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     

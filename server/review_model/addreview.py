@@ -20,7 +20,7 @@ from order.models import Review, Order
 review = Review()
 review_list = []
 
-with open('real_reviews_db.csv', encoding='utf8') as csv_file_review:
+with open('./files/real_reviews_db.csv', encoding='utf8') as csv_file_review:
     rows = csv.reader(csv_file_review)
     next(rows, None)
     for row in rows:
