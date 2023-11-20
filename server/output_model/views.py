@@ -8,13 +8,11 @@ from sklearn.preprocessing import StandardScaler
 class OutputPredView(APIView):
     def post(self, request):
         app_config = apps.get_app_config('output_model')
-        print(app_config)
 
         output_model = app_config.model
         sc_X = app_config.sc_X
         sc_y = app_config.sc_y
 
-        print(output_model)
         if not output_model:
             return Response({'error': 'model 로드 불가'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
