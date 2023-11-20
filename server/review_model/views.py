@@ -33,7 +33,7 @@ class ReviewPredView(APIView):
             # 예측 결과 반환
             positive = predictions.count(0)
             negative = predictions.count(1)
-            print(type(positive))
+            
             return Response({"positive": positive, "negative":negative}, status=status.HTTP_200_OK)
         else:
             return Response({"error": "제공하는 리뷰 없음"}, status=status.HTTP_400_BAD_REQUEST)
