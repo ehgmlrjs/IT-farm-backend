@@ -54,20 +54,20 @@ class OrderReadView(APIView):
 # 리뷰쓰기
 class ReviewCreateView(APIView):
     def post(self, request):
-        pk = request.data.get('order_id')
+        user_id = request.member.get('id')
+        product_name = request.data.get('product_name')
 
         # 결제 완료 된 주문만
-        order = Order.objects.get(order_id=pk)
+        order = get_object_or_404(Order, user_id=user_id,product_name=product_name)
         try:
             if order.status == 0:
                 review_data = {
-                    'order': order.order_id,
-                    'nickname': order.nickname, 
-                    'product_id': order.product.id,
+                    'order_id': order.order_id,
+                    'user_id': user_id,
+                    'product_name': request.data.get('product_name'),
                     'content': request.data.get('content'),
                     'score': request.data.get('score'),
-                    'photo': request.data.get('photo', None),
-                    'kind': order.product.kind
+                    'photo': request.data.get('photo', None)
                 }
             else:
                 return Response({'message':'이미 리뷰 등록'}, status=status.HTTP_400_BAD_REQUEST)
@@ -104,7 +104,7 @@ class ReviewDeleteView(APIView):
             return Response({'message': '삭제 실패'}, status=status.HTTP_400_BAD_REQUEST)
         
 class ReviewReadView(APIView):
-    def get(self, request, product_id):
-        reviews = Review.objects.filter(product_id=product_id)
+    def get(self, request, product_name):
+        reviews = Review.objects.filter(product_name=product_name)
         serializer = ReviewSerializer(reviews, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
