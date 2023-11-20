@@ -20,27 +20,27 @@ from order.models import Review, Order
 review = Review()
 review_list = []
 
-with open('./files/real_reviews_db.csv', encoding='utf8') as csv_file_review:
+with open('./files/reviews.csv', encoding='utf8') as csv_file_review:
     rows = csv.reader(csv_file_review)
     next(rows, None)
     for row in rows:
         
-        product_id = row[0]
-        nickname = row[1]
-        content = row[2]
-        score = row[4]
-        order_id = row[6]
-        
+        product_name = row[0]
+        content = row[1]
+        score = row[3]
+        order_id = row[5]
+        user_id = 1       
         try:
             order_instance = Order.objects.get(order_id=order_id)
         except Order.DoesNotExist:
             print(f"Order with order_id {order_id} does not exist.")
             continue
-        review = Review(product_id=product_id,
-                        nickname=nickname,
+        review = Review(product_name=product_name,
+                        order_id=order_instance,
+                        user_id=user_id,
                         content=content,
                         score=score,
-                        order=order_instance)
+                        )
 
         review_list.append(review)
 
