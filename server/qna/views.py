@@ -56,7 +56,6 @@ class QnaUpdateView(APIView):
 
 class QnaDeleteView(APIView):
     def delete(self, request, qna_id):
-        # pk = request.data.get('qna_id')
         qna = get_object_or_404(Qna, qna_id=qna_id)
         try:
             qna.delete()
@@ -90,7 +89,6 @@ class CommentCreateView(APIView):
     
 class CommentReadView(APIView):
     def get(self, request, qna):
-        # qna_id = request.data.get('qna')  
         comments = Comment.objects.filter(qna_id=qna)
         serializer = CommentSerializer(comments, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -107,7 +105,6 @@ class CommentUpdateView(APIView):
     
 class CommentDeleteView(APIView):
     def delete(self, request, comment_id):
-        # pk = request.data.get('comment_id')
         comment = get_object_or_404(Comment, comment_id=comment_id)
 
         try:
