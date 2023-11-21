@@ -3,7 +3,6 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.apps import apps
 import numpy as np
-from sklearn.preprocessing import StandardScaler
 
 class OutputPredView(APIView):
     def post(self, request):
