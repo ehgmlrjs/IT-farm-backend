@@ -26,13 +26,11 @@ def geocoding(address):
             response_body = response.read().decode('utf-8')
             response_body = json.loads(response_body)
             if response_body['addresses'] == []:
-                print('result not exist!')
                 latitude = None
                 longitude = None
             else:
                 latitude = response_body['addresses'][0]['y']
                 longitude = response_body['addresses'][0]['x']
-                print('Success!')
         else:
             print('Response error code : %d' % rescode)
             latitude = None

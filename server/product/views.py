@@ -40,6 +40,7 @@ class ProductDeleteView(APIView):
 
 class ProductReadView(APIView):
     def get(self, request):
+        print(request)
         products = Product.objects.all()
         serializer = ProductSerializer(products,many=True)
         return Response(serializer.data)

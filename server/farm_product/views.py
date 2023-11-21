@@ -52,7 +52,7 @@ class FarmProductReadView(APIView):
         if center:
             farm_product = Farm_products.objects.filter(center=center,state='등록대기')
         else:
-            farm_product = Farm_products.objects.filter(user_id=user_id)
+            farm_product = Farm_products.objects.filter(farm_id__user_id=user_id)
         serializer = FarmReadSerializer(farm_product,many=True)
         return Response(serializer.data)
     

@@ -22,15 +22,20 @@ class QnaCreateView(APIView):
 class QnaReadView(APIView):
     def get(self, request):
         nickname = request.member.get('nickname')
-    
-        qna = Qna.objects.filter(nickname=nickname)
+        if request.member.get('user_type') == 'admin':
+            qna = Qna.objects.all()
+        else :
+            qna = Qna.objects.filter(nickname=nickname)
         serializer = QnaSerializer(qna, many=True) 
         return Response(serializer.data, status=status.HTTP_200_OK)
     
 class QnaDetailReadView(APIView):
     def get(self, request, qna_id):
         nickname = request.member.get('nickname')
-        qna = Qna.objects.filter(qna_id=qna_id, nickname=nickname)
+        if request.member.get('user_type') == 'admin':
+            qna = Qna.objects.filter(qna_id=qna_id)
+        else:
+            qna = Qna.objects.filter(qna_id=qna_id, nickname=nickname)
         serializer = QnaSerializer(qna, many=True)
         
         return Response(serializer.data, status=status.HTTP_200_OK)

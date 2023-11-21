@@ -60,6 +60,8 @@ INSTALLED_APPS = [
     'corsheaders',
 ]
 
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     'corsheaders.middleware.CorsMiddleware',
