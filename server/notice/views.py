@@ -8,7 +8,6 @@ from django.db.models import Q
 
 class NoticeReadView(APIView):
     def get(self, request):
-
         notices = Notice.objects.all()
         serializer = NoticeSerializer(notices, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -30,9 +29,8 @@ class NoticeCreateView(APIView):
 class NoticeUpdateView(APIView):
     def put(self, request):
         pk = request.data.get('notice_id')
-        user_type = request.member.get('user_type')
         notice = get_object_or_404(Notice, notice_id=pk)
-        serializer = NoticeSerializer(notice, data={**request.data, 'user_type':user_type})
+        serializer = NoticeSerializer(notice, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -40,7 +38,6 @@ class NoticeUpdateView(APIView):
 
 class NoticeDeleteView(APIView):
     def delete(self, request, notice_id):
-        # pk = request.data.get('notice_id')
         notice = get_object_or_404(Notice, notice_id=notice_id)
         try:
             notice.delete()

@@ -22,7 +22,6 @@ class OrderCreateView(APIView):
 # 주문삭제
 class OrderDeleteView(APIView):
     def delete(self, request, order_id):
-        # pk = request.data.get('order_id')
         order = get_object_or_404(Order, order_id=order_id)
         try:
             order.delete()
@@ -32,7 +31,6 @@ class OrderDeleteView(APIView):
 
 class OrderReadView(APIView):
     def get(self, request):
-        # pk = request.data.get('order_id')
         user_id = request.member.get('id')
         order = Order.objects.filter(user_id=user_id)
         serializer = OrderSerializer(order, many=True)
@@ -95,7 +93,6 @@ class ReviewUpdateView(APIView):
 # 리뷰 삭제
 class ReviewDeleteView(APIView):
     def delete(self, request, review_id):
-        # pk = request.data.get('review_id')
         review = get_object_or_404(Review, review_id=review_id)
         try:
             review.delete()

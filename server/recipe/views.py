@@ -26,7 +26,6 @@ class RecipeReadView(APIView):
     
 class RecipeDetailReadView(APIView):
     def get(self, request, recipe_id):
-        # pk = request.data.get('recipe_id')
         recipes = Recipe.objects.filter(recipe_id=recipe_id)
         serializer = RecipeSerializer(recipes, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -44,7 +43,6 @@ class RecipeUpdateView(APIView):
     
 class RecipeDeleteView(APIView):
     def delete(self, request, recipe_id):
-        # pk = request.data.get('recipe_id')
         recipes = get_object_or_404(Recipe, recipe_id=recipe_id)
         try:
             recipes.delete()
