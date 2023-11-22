@@ -12,14 +12,8 @@ class Authmiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
     
-    def __call__(self, request):
-        urls = ('/users/','/product/read/','/product/detail/','/product/search/','/event/read/','/recipe/read/',
-                '/recipe/detail/','/recipe/search/')
-        if request.path in urls:
-            response = self.get_response(request)
-            return response
-        
-        if request.path.startswith('/users/'):
+    def __call__(self, request):        
+        if request.path.startswith('/users/') or request.path.startswith('/admin/'):
             response = self.get_response(request)
             return response
         
@@ -42,7 +36,7 @@ class Authmiddleware:
                 pk = payload.get('user_id')
                 user = get_object_or_404(User, pk=pk)
                 serializer = UserSerializer(instance=user)
-                request.user = serializer.data
+                request.member = serializer.data
                 response = self.get_response(request)
                 response.set_cookie('access_token', access, httponly=True, secure=False, max_age=3600)
             else:
