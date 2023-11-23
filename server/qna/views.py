@@ -23,9 +23,9 @@ class QnaReadView(APIView):
     def get(self, request):
         nickname = request.member.get('nickname')
         if request.member.get('user_type') == 'admin':
-            qna = Qna.objects.all()
+            qna = Qna.objects.all().order_by('-regdate')
         else :
-            qna = Qna.objects.filter(nickname=nickname)
+            qna = Qna.objects.filter(nickname=nickname).order_by('-regdate')
         serializer = QnaSerializer(qna, many=True) 
         return Response(serializer.data, status=status.HTTP_200_OK)
     
@@ -71,9 +71,9 @@ class QnaSearchView(APIView):
             search_list = Qna.objects.filter(
                 Q(subject__icontains=search) |
                 Q(content__icontains=search),
-            )
+            ).order_by('-regdate')
         else:
-            search_list = Qna.objects.all()
+            search_list = Qna.objects.all().order_by('-regdate')
         serializer = QnaSerializer(search_list, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 

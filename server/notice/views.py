@@ -8,7 +8,7 @@ from django.db.models import Q
 
 class NoticeReadView(APIView):
     def get(self, request):
-        notices = Notice.objects.all()
+        notices = Notice.objects.all().order_by('-notice_id')
         serializer = NoticeSerializer(notices, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
