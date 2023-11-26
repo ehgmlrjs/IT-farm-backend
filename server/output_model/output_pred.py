@@ -1,33 +1,52 @@
-import numpy as np
-import matplotlib.pyplot as plt
-import pandas as pd
-from sklearn.impute import SimpleImputer
-from sklearn.preprocessing import StandardScaler
+import warnings
+warnings.filterwarnings('ignore')
+
 from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestRegressor
+from sklearn.preprocessing import MinMaxScaler
+from tensorflow import keras
+from keras.models import Sequential
+from keras.layers import LSTM, Dense, Dropout
+from keras.optimizers import Adam
 
-dataset = pd.read_csv('./files/output.csv')
+import pandas as pd
 
-X = dataset.iloc[:, :-1].values
-y = dataset.iloc[:, -1].values
-
-y = y.reshape(-1,1)
-
-imputer = SimpleImputer(missing_values=np.nan, strategy='mean')
-X = imputer.fit_transform(X)
-
-sc_X = StandardScaler()
-sc_y = StandardScaler()
-X = sc_X.fit_transform(X)
-y = sc_y.fit_transform(y)
-
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-
-regressor = RandomForestRegressor(n_estimators = 100, random_state = 42, max_depth=35, max_features=1.0, n_jobs=-1)
-regressor.fit(X_train, y_train.ravel())
-
-# 모델 저장
 import joblib
-joblib.dump(regressor, './files/output_model.joblib')
-joblib.dump(sc_X, './files/sc_X.joblib')
-joblib.dump(sc_y, './files/sc_y.joblib')
+
+data = pd.read_csv('./files/1.csv')
+data.fillna(data.median(), inplace=True)
+
+X = data.drop(['all_product'], axis=1)
+y = data['all_product']
+
+scaler_X = MinMaxScaler()
+scaler_y = MinMaxScaler()
+
+X_scaled = scaler_X.fit_transform(X)
+y_scaled = scaler_y.fit_transform(y.values.reshape(-1, 1))
+
+# 훈련 데이터와 테스트 데이터 분리
+X_train, X_test, y_train, y_test = train_test_split(X_scaled, y_scaled, test_size=0.2, random_state=42)
+
+# LSTM에 입력하기 위한 차원 변경
+X_train = X_train.reshape((X_train.shape[0], 1, X_train.shape[1]))
+X_test = X_test.reshape((X_test.shape[0], 1, X_test.shape[1]))
+
+model = Sequential()
+model.add(LSTM(50, return_sequences=True, input_shape=(X_train.shape[1], X_train.shape[2])))
+model.add(Dropout(0.01))
+model.add(LSTM(50, return_sequences=True))  # LSTM 층 추가 (return_sequences=True로 설정)
+model.add(Dropout(0.01))
+model.add(LSTM(50, return_sequences=False))  # LSTM 층 추가 (return_sequences=False로 설정)
+model.add(Dropout(0.01))
+model.add(Dense(64))  # Dense 층 추가
+model.add(Dense(1))  # 추가한 Dense 층
+
+# 모델 컴파일
+model.compile(optimizer=Adam(learning_rate=0.001), loss='mean_squared_error')
+
+# 모델 학습
+history = model.fit(X_train, y_train, epochs=20, batch_size=10, validation_data=(X_test, y_test), verbose=1)
+
+joblib.dump(model, './files/output_model.joblib')
+joblib.dump(scaler_X, './files/scaler_X.joblib')
+joblib.dump(scaler_y, './files/scaler_y.joblib')

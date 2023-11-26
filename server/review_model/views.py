@@ -30,6 +30,8 @@ class ReviewPredView(APIView):
                 prediction = optimized_pipeline.predict([preprocessed_review])
                 predictions.append(prediction[0])
             
+            # print([i+1 for i, value in enumerate(predictions) if value == 1])
+            
             # 예측 결과 반환
             positive = predictions.count(0)
             negative = predictions.count(1)
