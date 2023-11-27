@@ -14,7 +14,11 @@ class RegisterView(APIView):
             serializer.save()
             return Response({"message": "성공"}, status=status.HTTP_201_CREATED)
         errors = serializer.errors
-        return Response({"message": "실패", "error": errors}, status=status.HTTP_400_BAD_REQUEST)
+        if errors.get('email') is not None:
+            return Response({'message':'이미 있는 이메일'}, status=status.HTTP_400_BAD_REQUEST)
+        elif errors.get('nickname') is not None:
+            return Response({'message':'이미 있는 닉네임'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"message": "입력한 정보를 확인해 주세요"}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class LoginView(APIView):

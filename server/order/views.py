@@ -32,7 +32,7 @@ class OrderDeleteView(APIView):
 class OrderReadView(APIView):
     def get(self, request):
         user_id = request.member.get('id')
-        order = Order.objects.filter(user_id=user_id)
+        order = Order.objects.filter(user_id=user_id).order_by('-order_date')
         serializer = OrderSerializer(order, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
