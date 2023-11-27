@@ -12,11 +12,13 @@ class Authmiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
     
-    def __call__(self, request):        
-        if request.path.startswith('/users/') or request.path.startswith('/admin/'):
+    def __call__(self, request):
+        allowed_paths = ('/users/','/admin/','/product/detail/','/order/review/read/','/recipe/read/')
+        if any(request.path.startswith(path) for path in allowed_paths):
             response = self.get_response(request)
             return response
-        
+
+        print(request.path)
         try:
             access = request.COOKIES.get('access_token')
             payload = jwt.decode(access, SECRET_KEY, algorithms=['HS256'])
@@ -28,6 +30,7 @@ class Authmiddleware:
 
         except jwt.exceptions.ExpiredSignatureError:
             refresh = request.COOKIES.get('refresh_token')
+            print(refresh)
             data = {'refresh': refresh}
             serializer = TokenRefreshSerializer(data=data)
             if serializer.is_valid(raise_exception=True):
