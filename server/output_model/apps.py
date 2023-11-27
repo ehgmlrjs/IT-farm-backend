@@ -9,18 +9,16 @@ class OutputModelConfig(AppConfig):
     model_path = './output_model/files/output_model.joblib'
     model = None
 
-    sc_X_path = './output_model/files/sc_X.joblib'
-    sc_X = None
-    
-    sc_y_path = './output_model/files/sc_y.joblib'
-    sc_y = None
+    scaler_X_path = './output_model/files/scaler_X.joblib'
+    scaler_X = None
 
+    scaler_y_path = './output_model/files/scaler_y.joblib'
+    scaler_y = None
 
     def ready(self):
         if os.path.exists(self.model_path):
             self.model = load(self.model_path)
-        if os.path.exists(self.sc_X_path):
-            self.sc_X = load(self.sc_X_path)
-        if os.path.exists(self.sc_y_path):
-            self.sc_y = load(self.sc_y_path)
-        
+        if os.path.exists(self.scaler_X_path):
+            self.scaler_X = load(self.scaler_X_path)
+        if os.path.exists(self.scaler_y_path):
+            self.scaler_y = load(self.scaler_y_path)
