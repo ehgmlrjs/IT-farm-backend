@@ -52,12 +52,14 @@ class OrderReadView(APIView):
 # 리뷰쓰기
 class ReviewCreateView(APIView):
     def post(self, request):
+        print(request.data)
         user_id = request.member.get('id')
         product_name = request.data.get('product_name')
+        print(user_id)
 
-        # 결제 완료 된 주문만
-        order = get_object_or_404(Order, user_id=user_id,product_name=product_name)
         try:
+            # 결제 완료 된 주문만
+            order = get_object_or_404(Order, user_id=user_id,product_name=product_name)
             if order.status == 0:
                 review_data = {
                     'order_id': order.order_id,
@@ -68,9 +70,9 @@ class ReviewCreateView(APIView):
                     'photo': request.data.get('photo', None)
                 }
             else:
-                return Response({'message':'이미 리뷰 등록'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'message':'이미 리뷰 등록'}, status=status.HTTP_409_CONFLICT)
         except:
-            return Response({'error': '주문번호가 존재하지 않음'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'message': '주문번호가 존재하지 않음'}, status=status.HTTP_404_NOT_FOUND)
         
         serializer = ReviewSerializer(data=review_data)
         if serializer.is_valid():
@@ -102,6 +104,6 @@ class ReviewDeleteView(APIView):
         
 class ReviewReadView(APIView):
     def get(self, request, product_name):
-        reviews = Review.objects.filter(product_name=product_name)
+        reviews = Review.objects.filter(product_name=product_name).order_by('-regdate')
         serializer = ReviewReadSerializer(reviews, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)

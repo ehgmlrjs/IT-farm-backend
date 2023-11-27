@@ -22,15 +22,20 @@ class QnaCreateView(APIView):
 class QnaReadView(APIView):
     def get(self, request):
         nickname = request.member.get('nickname')
-    
-        qna = Qna.objects.filter(nickname=nickname)
+        if request.member.get('user_type') == 'admin':
+            qna = Qna.objects.all().order_by('-regdate')
+        else :
+            qna = Qna.objects.filter(nickname=nickname).order_by('-regdate')
         serializer = QnaSerializer(qna, many=True) 
         return Response(serializer.data, status=status.HTTP_200_OK)
     
 class QnaDetailReadView(APIView):
     def get(self, request, qna_id):
         nickname = request.member.get('nickname')
-        qna = Qna.objects.filter(qna_id=qna_id, nickname=nickname)
+        if request.member.get('user_type') == 'admin':
+            qna = Qna.objects.filter(qna_id=qna_id)
+        else:
+            qna = Qna.objects.filter(qna_id=qna_id, nickname=nickname)
         serializer = QnaSerializer(qna, many=True)
         
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -66,9 +71,9 @@ class QnaSearchView(APIView):
             search_list = Qna.objects.filter(
                 Q(subject__icontains=search) |
                 Q(content__icontains=search),
-            )
+            ).order_by('-regdate')
         else:
-            search_list = Qna.objects.all()
+            search_list = Qna.objects.all().order_by('-regdate')
         serializer = QnaSerializer(search_list, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
