@@ -47,7 +47,7 @@ model.compile(optimizer=Adam(learning_rate=0.001), loss='mean_squared_error')
 # 모델 학습
 history = model.fit(X_train, y_train, epochs=20, batch_size=10, validation_data=(X_test, y_test), verbose=1)
 
-joblib.dump(model, './files/output_model.joblib')
-# model.save('./files/output_model.h5')
+# joblib.dump(model, './files/output_model.joblib')
+model.save('./files/output_model.h5')
 joblib.dump(scaler_X, './files/scaler_X.joblib')
 joblib.dump(scaler_y, './files/scaler_y.joblib')
