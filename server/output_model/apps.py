@@ -6,7 +6,7 @@ class OutputModelConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'output_model'
 
-    model_path = './output_model/files/output_model.joblib'
+    model_path = './output_model/files/output_model.h5'
     model = None
 
     scaler_X_path = './output_model/files/scaler_X.joblib'
