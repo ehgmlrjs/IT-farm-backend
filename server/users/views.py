@@ -34,7 +34,6 @@ class LoginView(APIView):
             access = refresh.access_token
             serializer = UserSerializer(user)
 
-            serializer = UserSerializer(user)
             response = Response({'message':'로그인 성공','user':serializer.data},status=status.HTTP_201_CREATED)
             response.set_cookie('access_token', access, httponly=True, secure=False)
             response.set_cookie('refresh_token', refresh, httponly=True, secure=False, max_age=86400)
