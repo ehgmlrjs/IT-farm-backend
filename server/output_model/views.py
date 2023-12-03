@@ -10,15 +10,11 @@ class OutputPredView(APIView):
 
         app_config = apps.get_app_config('output_model')
 
-        if app_config.ready:
-            output_model = app_config.model
-            scaler_X = app_config.scaler_X
-            scaler_y = app_config.scaler_y
-        else :
-            print('여기')
+        output_model = app_config.model
+        scaler_X = app_config.scaler_X
+        scaler_y = app_config.scaler_y
 
         if not output_model:
-            print('a')
             return Response({'error': 'model 로드 불가'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
         output_data = {
